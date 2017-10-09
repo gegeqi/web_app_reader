@@ -296,7 +296,7 @@
         </div>
 </body>
 </html>
-<script type="text/javascript" src="lib/zepto.min.js"></script>
+    <script type="text/javascript" src="lib/zepto.min.js"></script>
     <script type="text/javascript">
         window.jQuery = $;
 
@@ -313,17 +313,33 @@
                 var StorageSetter = function(key,val) {
                     return localStorage.setItem(prefix+key,val);
                 }
-                var getJsonp = function(){
+                // var getJsonp = function(url,callback){
+                //     return $.jsonp({
+                //         url : url,
+                //         cache : true,
+                //         callback : 'duokan_fiction_chapter',
+                //         success : function(result) {
+                //             var data = $.base64.decode(result);
+                //             var json = decodeURIComponent(escape(data));
+                //             console.log(data);
+                //             console.log(escape(data));
+                //             console.log(json);
+                //             callback(data);
+                //         }
+                //     })
+                // }
+                // 
+                var getJsonp = function(url,callback){
                     return $.jsonp({
                         url : url,
-                        chache : true,
+                        cache : true,
                         callback : 'duokan_fiction_chapter',
-                        success : function(result) {
+                        success : function(result){
                             var data = $.base64.decode(result);
                             var json = decodeURIComponent(escape(data));
-                            callback(data);
+                            callback(json);
                         }
-                    })
+                    });
                 }
                 return {
                     getJsonp : getJsonp,
@@ -387,36 +403,70 @@
 
 
                 function ReaderModel(){
-                    //todo 实现和阅读器相关的数据交互方法
-                    var Chaper_id;
+                    // todo 实现和阅读器相关的数据交互方法
+                    // var Chapter_id;
+                    // var init = function(){
+                    //     getFictionInfo(function(){
+                    //         getCurChapterContent(Chapter_id,data,function(){
+                    //             //todo 
+                    //         });
+                    //     });
+                    // }
+                    // var getFictionInfo = function(callback) {
+                    //     $.getJSON('data/chapter.json',function(data) {
+                    //         //todo 获得章节信息之后的回调
+                    //         Chapter_id = data.chapters[0].chapter_id;
+                    //         callback && callback();
+                    //     },'json');
+                    // }
+
+
+                    // var getCurChapterContent =function(chapter_id) {
+                    //     $.getJSON('data/data' +chapter_id+'.json',function(data){
+                    //         console.log(data);
+                    //         if（data.result == 0）{
+                    //             var url = data.jsonp;
+                    //             Util.getJsonp(url,function(data){
+                    //                 callback && callback(data);
+                    //             });
+                    //         }
+                    //     },'json');
+                    // }
+                    // return {
+                    //     init : init
+                    // }
+                    
+                    var Chapter_id;
                     var init = function(){
                         getFictionInfo(function(){
-                            getCurChapterContent(Chaper_id,function(){
+                            getCurChapterContent(Chapter_id,function(){
                                 //todo 
                             });
                         });
                     }
                     var getFictionInfo = function(callback) {
-                        $.get('data/chapter.json',function() {
+                        $.getJSON('data/chapter.json',function(data) {
                             //todo 获得章节信息之后的回调
-                            Chaper_id = data.chapters[1].chapter_id;
+                            Chapter_id = data.chapters[1].chapter_id;
                             callback && callback();
                         },'json');
                     }
 
 
-                    var getCurChapterContent =function(chaper_id,data) {
-                        $.get('data/data' +chapter_id+'.json',function(data){
-                            if（data.result == 0）{
+                    var getCurChapterContent =function(chapter_id,data) {
+                        $.getJSON('data/data'+chapter_id+'.json',function(data){
+                            if(data.result == 0){
                                 var url = data.jsonp;
+                                // console.log(url);
                                 Util.getJsonp(url,function(data){
+                                    debugger;
                                     callback && callback(data);
                                 });
                             }
                         },'json');
                     }
                     return {
-                        init : init
+                        init:init
                     }
                 }
 

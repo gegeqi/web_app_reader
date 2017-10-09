@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script type="text/javascript" src="lib/zepto.min.js"></script>
+<script type="text/javascript">
+    window.jQuery = $;
+</script>
+<script type="text/javascript" src="js/jquery.jsonp-2.4.0.js"></script>
+<script type="text/javascript">
+    // var getCurChapterContent =function(chaper_id,data) {
+    //                     $.get('data/data' +chapter_id+'.json',function(data){
+    //                         if（data.result == 0）{
+    //                             var url = data.jsonp;
+    //                             Util.getJsonp(url,function(data){
+    //                                 callback && callback(data);
+    //                             });
+    //                         }
+    //                     },'json');
+    //                 }
+                    (function(){
+                        // $.getJSON('data/data1.json', function(data){
+                        // console.log(data);
+
+                        // });
+                        // 
+                        
+                    //todo 实现和阅读器相关的数据交互方法
+                    var Chapter_id;
+                    var init = function(){
+                        getFictionInfo(function(){
+                            getCurChapterContent(Chapter_id,function(){
+                                //todo 
+                            });
+                        });
+                    }
+                    var getFictionInfo = function(callback) {
+                        $.getJSON('data/chapter.json',function(data) {
+                            //todo 获得章节信息之后的回调
+                            Chapter_id = data.chapters[0].chapter_id;
+                            callback && callback();
+                            console.log(Chapter_id);
+                        },'json');
+                    }
+
+
+                    var getCurChapterContent =function(chapter_id) {
+                        $.getJSON('data/data1.json',function(data){
+                            console.log(data);
+                            console.log(data.result == 0);
+                            var result = data.result;
+                            console.log(result);
+                            console.log(typeof result);
+                            if(data.result == 0){
+                                console.log('============');
+                                var url = data.jsonp;
+                            }
+                            // console.log(data.chapters);
+                            // if（result === 0）{
+                            //     var url = data.jsonp;
+                            //     return url;
+                            //     console.log(url);
+                            //     console.log('success++++++++++++');
+                            //     }
+                        },'json');
+                    }
+
+
+                    var getJsonp = function(){
+                    return $.jsonp({
+                        url : 'http://html.read.duokan.com/mfsv2/secure/s010/60009/file?nonce=87e8e80bd9a84314badbd9230ff521b4&token=89GiFGpK01J7WSSnxHnjoefpgNPv-zrNCurl0z1EkRx4OZm4-aB36_TllcymXfewETa58Q9VLD9jJcC4MS7oa0uRTgC6JG9Poed648pU41U&sig=FxmsSqJuj3BM0pQ07XKq13UGJLY',
+                        cache : true,
+                        callback : 'duokan_fiction_chapter',
+                        // callbackParameter: "callback",
+                        success : function(result) {
+                            var data = $.base64.decode(result);
+                            var json = decodeURIComponent(escape(data));
+                            callback(data);
+                            console.log('========');
+                        }
+                    })
+                }
+                    
+
+                    // init();
+                    // getFictionInfo();
+                    // getCurChapterContent();
+                    getJsonp(function(){
+                        console.log(1);
+                    });
+                
+                    })();
+                   
+</script>
