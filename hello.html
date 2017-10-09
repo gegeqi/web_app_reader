@@ -23,7 +23,6 @@
             text-align: left;
             width: 100%;
             overflow: hidden;
-            background-color: #e9dfc7;
         }
         .m-read-content{
             font-size: 14px;
@@ -266,13 +265,13 @@
             <div class="bk-container" id="bk-container-1" style="background: #fff">
                 <div class="bk-container-current"></div>
             </div>
-            <div class="bk-container" id="bk-container-2" style="background: #8c8c8c">
+            <div class="bk-container" id="bk-container-2" style="background: rgb(199,237,204)">
                 <div class="bk-container-current"></div>
             </div>
-            <div class="bk-container" id="bk-container-3" style="background: #bc8f8f">
+            <div class="bk-container" id="bk-container-3" style="background: rgb(255,246,230)">
                 <div class="bk-container-current"></div>
             </div>
-            <div class="bk-container" id="bk-container-4" style="background: #7FFFD4">
+            <div class="bk-container" id="bk-container-4" style="background: #e9dfc7">
                 <div class="bk-container-current"></div>
             </div>
         </div>
@@ -357,13 +356,13 @@
                 //缓存window和document
                 var win = $(window);
                 var doc = $(document);
-                // var body = $('body');
+                var body = $('body');
                 var readerModel;
                 var readerUI;
                 var rootContainer = $("#fiction_container");
                 var initFontSize = Util.StorageGetter('font-size');
                 var initBackground = Util.StorageGetter('background');
-                var initBackgroundColor = Util.StorageGetter('background-color');
+                // var initBackgroundColor = Util.StorageGetter('background-color');
                 var initColor = Util.StorageGetter('color');
                 var initInnerText = Util.StorageGetter('innerText');
 
@@ -384,16 +383,17 @@
                 if(initInnerText == '白天'){
                     rootContainer.css({
                         'font-size':initFontSize,
-                        'background':initBackground
+                        'background':initBackground,
+                        'color':initColor
                     });
-                    // body.css('background',initBackground);
+                    body.css('background',initBackground);
                 }else {
                     rootContainer.css({
                         'font-size':initFontSize,
-                        'background-color':initBackgroundColor,
-                        'color':initColor,
+                        'background':initBackground,
+                        'color':initColor
                     });
-                    // body.css('background',initBackground);
+                    body.css('background',initBackground);
                 }
 
                 function main(){
@@ -589,18 +589,18 @@
                             var that = Dom.neight_day_switch_button;
                             if(that[0].innerText == '夜间'){
                                 that[0].innerText = '白天';
-                                rootContainer.css({'background-color':'rgb(230,255,230)','color':'#000'});
-                                // body.css('background','rgb(230,255,230)');
-                                Util.StorageSetter('background-color','rgb(230,255,230)');
-                                Util.StorageSetter('color','#000');
+                                rootContainer.css({'background':'#b5eecd','color':'#414c41'});
+                                body.css('background','#b5eecd');
+                                Util.StorageSetter('background','#b5eecd');
+                                Util.StorageSetter('color','#414c41');
                                 Util.StorageSetter('innerText','白天');
 
                             }else {
                                 that[0].innerText = '夜间';
-                                rootContainer.css({'background-color':'rgb(80,96,80)','color':'#aaa'});
-                                // body.css('background','rgb(80,96,80)');
-                                Util.StorageSetter('background-color','rgba(20,24,20,0.5)');
-                                Util.StorageSetter('color','#aaa');
+                                rootContainer.css({'background':'#414441','color':'#d5cecd'});
+                                body.css('background','#414441');
+                                Util.StorageSetter('background','#414441');
+                                Util.StorageSetter('color','#d5cecd');
                                 Util.StorageSetter('innerText','夜间');
                             }
                         });
@@ -609,10 +609,13 @@
                 function setBackground(){
                     for(var i = 1;i <= $('.bk-container').length;i++){
                         $('#bk-container-'+i).click(function(event) {
+                        body.css('background','none');
+                        rootContainer.css('color','#414c41');
                         initBackground = this.style.background;
                         rootContainer.css("background",this.style.background);
-                        // body.css('background',this.style.background);
+                        body.css('background',this.style.background);
                         Util.StorageSetter('background',initBackground);
+                        Util.StorageSetter('color','#414c41');
                     });
                     }
                 }
