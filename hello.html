@@ -235,7 +235,7 @@
         </div>
         <div id="fiction_chapter_title"></div>
         <div id="fiction_container" class="m-read-content">
-            <h4>lorem好多个</h4>
+            <!-- <h4>lorem好多个</h4>
             <p>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia id ipsam cupiditate tempore, omnis suscipit. Reprehenderit odio hic laudantium cumque debitis aperiam, maxime eum sed blanditiis. Molestiae ducimus eum possimus sint, officia voluptate illum ratione impedit, exercitationem porro maxime consequatur quam earum! Quae iste ratione voluptatem ex officiis veniam architecto perferendis similique et repellendus sequi pariatur cupiditate, vero doloribus nemo placeat maxime provident, odit molestias soluta. Quo optio nostrum sed eaque, ad distinctio ipsum voluptas repellendus eos soluta molestiae officia ex possimus dolorum iure voluptate quam magnam culpa id deserunt natus omnis illum. Omnis, hic? Distinctio consequatur, doloremque ipsum similique.
             </p>
@@ -244,7 +244,7 @@
             </p>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero sunt quod sit, ratione eum aliquid corporis reprehenderit repudiandae nulla eos accusantium voluptas adipisci voluptatibus necessitatibus omnis aliquam maxime consequuntur. Maiores, aliquam velit consequatur blanditiis quia optio voluptatum soluta deserunt illo modi recusandae hic repudiandae, culpa voluptas delectus in nobis maxime possimus voluptatem! Pariatur sunt ea, delectus eius provident nulla eos ullam voluptatum sed sapiente cumque eligendi, sequi soluta vel. Fuga reiciendis, saepe culpa eum quisquam recusandae explicabo similique dolorum, labore aliquid id quis vel tempore eos sint accusantium assumenda. Voluptas vitae eum sunt doloribus ullam aut minus ut sint similique.
-            </p>
+            </p> -->
         </div>
         <div class="m-button-bar">
             <ul class="u-tab">
@@ -357,6 +357,7 @@
                 //缓存window和document
                 var win = $(window);
                 var doc = $(document);
+                var body = $('body');
                 var rootContainer = $("#fiction_container");
                 var initFontSize = Util.StorageGetter('font-size');
                 var initBackground = Util.StorageGetter('background');
@@ -382,13 +383,15 @@
                     rootContainer.css({
                         'font-size':initFontSize,
                         'background':initBackground
-                    })
+                    });
+                    body.css('background',initBackground);
                 }else {
                     rootContainer.css({
                         'font-size':initFontSize,
                         'background-color':initBackgroundColor,
                         'color':initColor,
-                    })
+                    });
+                    body.css('background',initBackground);
                 }
 
                 function main(){
@@ -398,7 +401,10 @@
                     switchNeightOrDay();
                     setFontSize();
                     var readerModel = ReaderModel();
-                    readerModel.init();
+                    var readerUI = ReaderBaseFrame(rootContainer);
+                    readerModel.init(function(data){
+                        readerUI(data) ;
+                    });
                 }
 
 
@@ -437,10 +443,11 @@
                     // }
                     
                     var Chapter_id;
-                    var init = function(){
+                    var init = function(UIcallback){
                         getFictionInfo(function(){
-                            getCurChapterContent(Chapter_id,function(){
+                            getCurChapterContent(Chapter_id,function(data){
                                 //todo 
+                                UIcallback && UIcallback(data);
                             });
                         });
                     }
@@ -453,13 +460,12 @@
                     }
 
 
-                    var getCurChapterContent =function(chapter_id,data) {
+                    var getCurChapterContent =function(chapter_id,callback) {
                         $.getJSON('data/data'+chapter_id+'.json',function(data){
                             if(data.result == 0){
                                 var url = data.jsonp;
                                 // console.log(url);
                                 Util.getJsonp(url,function(data){
-                                    debugger;
                                     callback && callback(data);
                                 });
                             }
@@ -470,8 +476,19 @@
                     }
                 }
 
-                function ReaderBaseFrame(){
+                function ReaderBaseFrame(container){
                     //todo 渲染基本的UI结构
+                    function parseChapterData(jsonData){
+                        var jsonObj = JSON.parse(jsonData);
+                        var html = '<h4>' + jsonObj.t + '</h4>';
+                        for(var i = 0 ;i<jsonObj.p.length;i++){
+                            html += '<p>'+jsonObj.p[i]+'</p>';
+                        }
+                        return html;
+                    }
+                    return function(data){
+                        container.html(parseChapterData(data));
+                    }
                 }
 
                 function EventHanlder(){
@@ -532,13 +549,15 @@
                             if(that[0].innerText == '夜间'){
                                 that[0].innerText = '白天';
                                 rootContainer.css({'background-color':'rgb(230,255,230)','color':'#000'});
+                                body.css('background','rgb(230,255,230)');
                                 Util.StorageSetter('background-color','rgb(230,255,230)');
                                 Util.StorageSetter('color','#000');
                                 Util.StorageSetter('innerText','白天');
 
                             }else {
                                 that[0].innerText = '夜间';
-                                rootContainer.css({'background-color':'rgba(20,24,20,0.5)','color':'#aaa'});
+                                rootContainer.css({'background-color':'rgb(80,96,80)','color':'#aaa'});
+                                body.css('background','rgb(80,96,80)');
                                 Util.StorageSetter('background-color','rgba(20,24,20,0.5)');
                                 Util.StorageSetter('color','#aaa');
                                 Util.StorageSetter('innerText','夜间');
@@ -551,6 +570,7 @@
                         $('#bk-container-'+i).click(function(event) {
                         initBackground = this.style.background;
                         rootContainer.css("background",this.style.background);
+                        body.css('background',this.style.background);
                         Util.StorageSetter('background',initBackground);
                     });
                     }
