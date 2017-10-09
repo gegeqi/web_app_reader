@@ -357,7 +357,7 @@
                 //缓存window和document
                 var win = $(window);
                 var doc = $(document);
-                var body = $('body');
+                // var body = $('body');
                 var readerModel;
                 var readerUI;
                 var rootContainer = $("#fiction_container");
@@ -386,14 +386,14 @@
                         'font-size':initFontSize,
                         'background':initBackground
                     });
-                    body.css('background',initBackground);
+                    // body.css('background',initBackground);
                 }else {
                     rootContainer.css({
                         'font-size':initFontSize,
                         'background-color':initBackgroundColor,
                         'color':initColor,
                     });
-                    body.css('background',initBackground);
+                    // body.css('background',initBackground);
                 }
 
                 function main(){
@@ -590,7 +590,7 @@
                             if(that[0].innerText == '夜间'){
                                 that[0].innerText = '白天';
                                 rootContainer.css({'background-color':'rgb(230,255,230)','color':'#000'});
-                                body.css('background','rgb(230,255,230)');
+                                // body.css('background','rgb(230,255,230)');
                                 Util.StorageSetter('background-color','rgb(230,255,230)');
                                 Util.StorageSetter('color','#000');
                                 Util.StorageSetter('innerText','白天');
@@ -598,7 +598,7 @@
                             }else {
                                 that[0].innerText = '夜间';
                                 rootContainer.css({'background-color':'rgb(80,96,80)','color':'#aaa'});
-                                body.css('background','rgb(80,96,80)');
+                                // body.css('background','rgb(80,96,80)');
                                 Util.StorageSetter('background-color','rgba(20,24,20,0.5)');
                                 Util.StorageSetter('color','#aaa');
                                 Util.StorageSetter('innerText','夜间');
@@ -611,7 +611,7 @@
                         $('#bk-container-'+i).click(function(event) {
                         initBackground = this.style.background;
                         rootContainer.css("background",this.style.background);
-                        body.css('background',this.style.background);
+                        // body.css('background',this.style.background);
                         Util.StorageSetter('background',initBackground);
                     });
                     }
