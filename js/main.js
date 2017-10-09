@@ -1,4 +1,5 @@
 (function(){
+            'use strict';
             var Util = (function(){
                 var prefix = "html5_reader_";
                 var StorageGetter = function(key) {
@@ -85,35 +86,45 @@
                     var Chapter_id;
                     var ChapterTotal;
                     var init = function(UIcallback){
-                        getFictionInfo(function(){
-                            getCurChapterContent(Chapter_id,function(data){
-                                //todo 
-                                UIcallback && UIcallback(data);
-                            });
-                        });
+                        getFictionInfoPromise().then(function(d){
+                           return getCurChapterContentPromise();
+                        }).then(function(d){
+                            UIcallback && UIcallback(d);
+                        })
                     }
-                    var getFictionInfo = function(callback) {
+                     var getFictionInfoPromise = function(){
+                        return new Promise(function(resolve,reject){
                         $.getJSON('data/chapter.json',function(data) {
                             //todo 获得章节信息之后的回调
-                            Chapter_id = Util.StorageGetter('last_chapter_id');
-                            if(Chapter_id == null){
-                                Chapter_id = data.chapters[1].chapter_id;
+                            if(data.result == 0){
+                                Chapter_id = Util.StorageGetter('last_chapter_id');
+                                if(Chapter_id == null){
+                                    Chapter_id = data.chapters[1].chapter_id;
+                                }
+                                ChapterTotal = data.chapters.length;
+                                resolve();
+                            }else{
+                                reject();
                             }
-                            ChapterTotal = data.chapters.length;
-                            callback && callback();
-                        },'json');
+                            },'json');
+                        });
                     }
-                    var getCurChapterContent =function(chapter_id,callback) {
-                        $.getJSON('data/data'+chapter_id+'.json',function(data){
+
+                    var getCurChapterContentPromise = function(){
+                        return new Promise(function(resolve,reject){
+                        $.getJSON('data/data'+Chapter_id+'.json',function(data){
                             if(data.result == 0){
                                 var url = data.jsonp;
                                 // console.log(url);
                                 Util.getJsonp(url,function(data){
-                                    callback && callback(data);
+                                    resolve(data);
                                 });
+                            }else {
+                                reject({'msg':'fail'});
                             }
                         },'json');
-                    }
+                    });
+                }
                     var prevChapter = function(UIcallback){
                         Chapter_id = parseInt(Chapter_id,10);
                         if(Chapter_id == 0){
